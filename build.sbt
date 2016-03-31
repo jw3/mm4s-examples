@@ -1,40 +1,49 @@
-name := "mm4s-examples"
-organization := "com.github.jw3"
-description := "Mattermost for Scala examples"
-version := "0.1-SNAPSHOT"
-licenses +=("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0"))
+lazy val commonSettings = Seq(
+  name := "mm4s-examples",
+  organization := "com.github.jw3",
+  description := "Mattermost for Scala examples",
+  version := "0.1-SNAPSHOT",
+  licenses +=("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0")),
 
-scalaVersion := "2.11.7"
-scalacOptions += "-target:jvm-1.8"
+  scalaVersion := "2.11.7",
+  scalacOptions += "-target:jvm-1.8",
 
-resolvers += "jw3 at bintray" at "https://dl.bintray.com/jw3/maven"
+  resolvers += "jw3 at bintray" at "https://dl.bintray.com/jw3/maven",
 
-libraryDependencies ++= {
-  val akkaVersion = "2.4.2"
-  val scalaTest = "3.0.0-M15"
+  libraryDependencies ++= {
+    val akkaVersion = "2.4.2"
+    val scalaTest = "3.0.0-M15"
 
-  Seq(
-    "com.rxthings" %% "akka-injects" % "0.4",
+    Seq(
+      "com.github.jw3" %% "mm4s-api" % "0.1-SNAPSHOT",
+      "com.github.jw3" %% "mm4s-bots" % "0.1-SNAPSHOT",
+      "com.github.jw3" %% "mm4s-dockerbot" % "0.1-SNAPSHOT",
 
-    "io.reactivex" %% "rxscala" % "0.26.0",
-    "com.shekhargulati.reactivex" % "rx-docker-client" % "0.2.0",
+      "com.rxthings" %% "akka-injects" % "0.4",
 
-    "com.typesafe.akka" %% "akka-actor" % akkaVersion,
-    "com.typesafe.akka" %% "akka-stream" % akkaVersion,
-    "com.typesafe.akka" %% "akka-http-core" % akkaVersion,
+      "io.reactivex" %% "rxscala" % "0.26.0",
+      "com.shekhargulati.reactivex" % "rx-docker-client" % "0.2.0",
 
-    "com.typesafe.akka" %% "akka-http-experimental" % akkaVersion,
-    "com.typesafe.akka" %% "akka-http-spray-json-experimental" % akkaVersion,
+      "com.typesafe.akka" %% "akka-actor" % akkaVersion,
+      "com.typesafe.akka" %% "akka-stream" % akkaVersion,
+      "com.typesafe.akka" %% "akka-http-core" % akkaVersion,
 
-    "com.typesafe.scala-logging" %% "scala-logging" % "3.1.0",
-    "com.typesafe.akka" %% "akka-slf4j" % akkaVersion % Runtime,
+      "com.typesafe.akka" %% "akka-http-experimental" % akkaVersion,
+      "com.typesafe.akka" %% "akka-http-spray-json-experimental" % akkaVersion,
 
-    "org.scalactic" %% "scalactic" % scalaTest % Test,
-    "org.scalatest" %% "scalatest" % scalaTest % Test,
-    "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
-    "com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion % Test
-  )
-}
+      "com.typesafe.scala-logging" %% "scala-logging" % "3.1.0",
+      "com.typesafe.akka" %% "akka-slf4j" % akkaVersion % Runtime,
 
-com.updateimpact.Plugin.apiKey in ThisBuild :=
-  sys.env.getOrElse("UPDATEIMPACT_API_KEY", (com.updateimpact.Plugin.apiKey in ThisBuild).value)
+      "org.scalactic" %% "scalactic" % scalaTest % Test,
+      "org.scalatest" %% "scalatest" % scalaTest % Test,
+      "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
+      "com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion % Test
+    )
+  },
+
+  com.updateimpact.Plugin.apiKey in ThisBuild :=
+    sys.env.getOrElse("UPDATEIMPACT_API_KEY", (com.updateimpact.Plugin.apiKey in ThisBuild).value)
+)
+
+lazy val `mm4s-examples` =
+  project.in(file("."))

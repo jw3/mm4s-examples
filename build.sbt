@@ -47,3 +47,19 @@ lazy val commonSettings = Seq(
 
 lazy val `mm4s-examples` =
   project.in(file("."))
+  .aggregate(mathbot)
+
+/**
+ * settings common across bot examples
+ * - mm4s.bots.Boot entrypoint
+ */
+lazy val botsettings = Seq(
+  mainClass in Compile := Some("mm4s.bots.Boot"),
+  dockerRepository := Some("jwiii"),
+  dockerBaseImage := "anapsix/alpine-java:jre8"
+)
+
+lazy val mathbot =
+  project.in(file("mathbot"))
+  .settings(commonSettings: _*)
+  .settings(botsettings: _*)

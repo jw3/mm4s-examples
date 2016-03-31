@@ -1,5 +1,4 @@
 lazy val commonSettings = Seq(
-  name := "mm4s-examples",
   organization := "com.github.jw3",
   description := "Mattermost for Scala examples",
   version := "0.1-SNAPSHOT",
@@ -61,5 +60,7 @@ lazy val botsettings = Seq(
 
 lazy val mathbot =
   project.in(file("mathbot"))
+  .settings(name := "mm4s-examples-mathbot")
   .settings(commonSettings: _*)
   .settings(botsettings: _*)
+  .enablePlugins(JavaAppPackaging)

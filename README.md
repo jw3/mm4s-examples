@@ -2,6 +2,29 @@
 
 Sample implementations of [mm4s](https://github.com/jw3/mm4s)
 
+## Basic Instructions for running a bot
+
+1. Package your bot into Docker image
+1. Deploy Mattermost
+2. Deploy Dockerbot
+3. Use Dockerbot REST API to deploy your bot
+
+### Math Bot
+
+Example of a well behaved bot that can do some basic math.
+
+Initiate conversation with `@math`
+
+See the help with `@math help`
+
+>Command format `(lhs operation rhs)`
+Four supported operations
+- `+` addition
+- `-` subtraction
+- `*` multiplication
+- `/` division
+
+
 ## Bugs and Feedback
 
 For bugs, questions and discussions please use the [Github Issues](https://github.com/jw3/mm4s-examples/issues).

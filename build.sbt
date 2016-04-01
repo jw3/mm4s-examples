@@ -17,6 +17,7 @@ lazy val commonSettings = Seq(
       "com.github.jw3" %% "mm4s-api" % "0.1-SNAPSHOT",
       "com.github.jw3" %% "mm4s-bots" % "0.1-SNAPSHOT",
       "com.github.jw3" %% "mm4s-dockerbot" % "0.1-SNAPSHOT",
+      "com.github.jw3" %% "consulq" % "0.1",
 
       "com.rxthings" %% "akka-injects" % "0.4",
 
@@ -46,7 +47,7 @@ lazy val commonSettings = Seq(
 
 lazy val `mm4s-examples` =
   project.in(file("."))
-  .aggregate(mathbot)
+  .aggregate(mathbot, consulbot)
 
 /**
  * settings common across bot examples
@@ -61,6 +62,13 @@ lazy val botsettings = Seq(
 lazy val mathbot =
   project.in(file("mathbot"))
   .settings(name := "mm4s-examples-mathbot")
+  .settings(commonSettings: _*)
+  .settings(botsettings: _*)
+  .enablePlugins(JavaAppPackaging)
+
+lazy val consulbot =
+  project.in(file("consulbot"))
+  .settings(name := "mm4s-examples-consulbot")
   .settings(commonSettings: _*)
   .settings(botsettings: _*)
   .enablePlugins(JavaAppPackaging)

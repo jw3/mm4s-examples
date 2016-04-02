@@ -1,5 +1,6 @@
 package mm4s.examples.twitter
 
+import java.io.File
 import java.nio.file.Files
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -7,7 +8,7 @@ import akka.actor.{Actor, ActorLogging, ActorRef}
 import akka.stream.scaladsl._
 import akka.stream.{ActorMaterializer, OverflowStrategy}
 import akka.util.ByteString
-import mm4s.api.{Post, Posted}
+import mm4s.api.{PostWithAttachment, Post, Posted}
 import mm4s.bots.api.{Bot, BotID, Ready}
 import mm4s.examples.twitter.GetTweetsBot.{TweetQueue, _}
 import net.codingwell.scalaguice.ScalaModule
@@ -26,7 +27,9 @@ class GetTweetsBot extends Actor with Bot with ActorLogging {
   }
 
   def ready(api: ActorRef, id: BotID): Receive = {
+    import GetTweetsBot._
     import TweetProtocol._
+
 
     log.debug("GetTweetsBot [{}] ready", id.username)
     api ! Post("GetTweetsBot ready")
@@ -58,8 +61,12 @@ class GetTweetsBot extends Actor with Bot with ActorLogging {
                     .run()
 
         val stream = factory.getInstance()
-        stream.addListener(new StatusForwarder(stream, queue, limit))
+        stream.addListener(new StatusForwarder(context.self, file, stream, queue, limit))
         stream.filter(new FilterQuery("espn"))
+
+      case Upload(f) if f.exists() =>
+        log.debug("uploading {}", f)
+        api ! PostWithAttachment("GetTweetsBot ready", f.toPath)
     }
   }
 
@@ -72,6 +79,8 @@ object GetTweetsBot {
   val defaultLimit = 10
   val rlimit = """limit\s*?(\d+)""".r.unanchored
   val factory = new TwitterStreamFactory()
+
+  case class Upload(file: File)
 }
 
 class GetTweetsBotModule extends ScalaModule {
@@ -104,7 +113,7 @@ object Location {
  *
  *
  */
-class StatusForwarder(stream: TwitterStream, queue: TweetQueue, limit: Int) extends StatusAdapter {
+class StatusForwarder(ref: ActorRef, file: File, stream: TwitterStream, queue: TweetQueue, limit: Int) extends StatusAdapter {
   val counter = new AtomicInteger
 
   override def onStatus(status: Status) = {
@@ -114,6 +123,7 @@ class StatusForwarder(stream: TwitterStream, queue: TweetQueue, limit: Int) exte
       queue.offer(None)
       stream.removeListener(this)
       stream.cleanUp()
+      ref ! Upload(file)
     }
   }
 }

@@ -53,7 +53,7 @@ class GetTweetsBot extends Actor with Bot with ActorLogging {
                     .takeWhile(_.isDefined)
                     .map(_.get)
                     .map(Tweet(_).toJson.compactPrint)
-                    .via(Flow[String].map(s => ByteString(s"$s\n")))
+                    .map(s => ByteString(s"$s\n"))
                     .to(sink)
                     .run()
 
@@ -78,16 +78,28 @@ class GetTweetsBotModule extends ScalaModule {
   def configure() = bind[Bot].to[GetTweetsBot]
 }
 
-case class Tweet(text: String, time: Long)
+case class Tweet(id: Long, text: String, time: Long, geo: Option[Location])
 object Tweet {
   def apply(status: Status): Tweet = {
-    Tweet(status.getText, status.getCreatedAt.getTime)
+    Tweet(
+      status.getId,
+      status.getText,
+      status.getCreatedAt.getTime,
+      Location(status.getGeoLocation)
+    )
   }
 }
 object TweetProtocol extends DefaultJsonProtocol {
-  implicit val tweetFormat: RootJsonFormat[Tweet] = jsonFormat2(Tweet.apply)
+  implicit val geoFormat: RootJsonFormat[Location] = jsonFormat2(Location.apply)
+  implicit val tweetFormat: RootJsonFormat[Tweet] = jsonFormat4(Tweet.apply)
 }
 
+case class Location(lat: Double, lon: Double)
+object Location {
+  def apply(geo: GeoLocation): Option[Location] = {
+    Option(geo).map(g => Location(g.getLatitude, g.getLongitude))
+  }
+}
 /**
  *
  *

@@ -14,6 +14,9 @@ lazy val commonSettings = Seq(
     val scalaTest = "3.0.0-M15"
 
     Seq(
+      "org.twitter4j" % "twitter4j-core" % "4.0.4",
+      "org.twitter4j" % "twitter4j-stream" % "4.0.4",
+
       "com.github.jw3" %% "mm4s-api" % "0.1-SNAPSHOT",
       "com.github.jw3" %% "mm4s-bots" % "0.1-SNAPSHOT",
       "com.github.jw3" %% "mm4s-dockerbot" % "0.1-SNAPSHOT",
@@ -69,6 +72,13 @@ lazy val mathbot =
 lazy val consulbot =
   project.in(file("consulbot"))
   .settings(name := "mm4s-examples-consulbot")
+  .settings(commonSettings: _*)
+  .settings(botsettings: _*)
+  .enablePlugins(JavaAppPackaging)
+
+lazy val gettweetbot =
+  project.in(file("gettweetbot"))
+  .settings(name := "mm4s-examples-gettweetbot")
   .settings(commonSettings: _*)
   .settings(botsettings: _*)
   .enablePlugins(JavaAppPackaging)

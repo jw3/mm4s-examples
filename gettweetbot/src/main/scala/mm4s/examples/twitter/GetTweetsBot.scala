@@ -8,7 +8,7 @@ import akka.actor.{Actor, ActorLogging, ActorRef}
 import akka.stream.scaladsl._
 import akka.stream.{ActorMaterializer, OverflowStrategy}
 import akka.util.ByteString
-import mm4s.api.{PostWithAttachment, Post, Posted}
+import mm4s.api.{Post, PostWithAttachment, Posted}
 import mm4s.bots.api.{Bot, BotID, Ready}
 import mm4s.examples.twitter.GetTweetsBot.{TweetQueue, _}
 import net.codingwell.scalaguice.ScalaModule
@@ -38,19 +38,12 @@ class GetTweetsBot extends Actor with Bot with ActorLogging {
       case Posted(t) if t.startsWith("@tweets") =>
         log.debug("{} received {}", self.path.name, t)
 
-        val limit = t match {
-          case s if s.contains("limit") => s match {
-            case rlimit(c) => c.toInt
-            case _ =>
-              log.warning("failed to parse limit string from [{}]", t)
-              0
-          }
-          case _ => defaultLimit
-        }
-
         val file = Files.createTempFile("tweets", "bot").toFile
         val sink = FileIO.toFile(file)
-        log.debug("logging {} tweets to {}", limit, file.getPath)
+
+        val limit = parseLimit(t)
+        val terms = parseTerms(t)
+        log.debug("logging {} tweets about {} to {}", limit, terms, file.getPath)
 
         val queue = Source.queue[Option[Status]](100, OverflowStrategy.dropTail)
                     .takeWhile(_.isDefined)
@@ -62,7 +55,7 @@ class GetTweetsBot extends Actor with Bot with ActorLogging {
 
         val stream = factory.getInstance()
         stream.addListener(new StatusForwarder(context.self, file, stream, queue, limit))
-        stream.filter(new FilterQuery("espn"))
+        if (terms.isEmpty) stream.sample() else stream.filter(new FilterQuery(terms: _*))
 
       case Upload(f) if f.exists() =>
         log.debug("uploading {}", f)
@@ -73,14 +66,38 @@ class GetTweetsBot extends Actor with Bot with ActorLogging {
   override def preStart() = log.debug("GetTweetsBot starting")
 }
 
+object run extends App {
+  """terms "espn, foo, bar" """ match {
+    case rterms(x) => println(x)
+    case _ => println("no match")
+  }
+}
+
 object GetTweetsBot {
   type TweetQueue = SourceQueue[Option[Status]]
 
   val defaultLimit = 10
   val rlimit = """limit\s*?(\d+)""".r.unanchored
+  val rterms = """terms "([\w]+[\s*,\s*\w]*)"""".r.unanchored
   val factory = new TwitterStreamFactory()
 
   case class Upload(file: File)
+
+  def parseLimit(t: String) = t match {
+    case s if s.contains("limit") => s match {
+      case rlimit(c) => c.toInt
+      case _ => 0
+    }
+    case _ => defaultLimit
+  }
+
+  def parseTerms(t: String) = t match {
+    case s if s.contains("terms") => s match {
+      case rterms(terms) => terms.split(",").map(_.trim).toSeq
+      case _ => Seq.empty
+    }
+    case _ => Seq.empty
+  }
 }
 
 class GetTweetsBotModule extends ScalaModule {

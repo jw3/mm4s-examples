@@ -24,6 +24,28 @@ Four supported operations
 - `*` multiplication
 - `/` division
 
+### Consul Bot
+
+### Get Tweets Bot
+
+An example file results being posted by a bot.
+
+Should identify the capability of this pattern as a developer tool for fetching sample data.
+
+### Status Bot
+
+Example of tracking and reporting of job status.
+
+Initiate conversation with `@statusbot`
+
+Command formats
+- `mock X` start task that runs for X seconds, returns task id 
+- `check id` check completion status of id, return % of completion
+- `isdone id` check completion status of id, returns boolean completion
+
+### Chained Bots
+
+Example of bot jobs together by sending result a to job b
 
 ## Bugs and Feedback
 

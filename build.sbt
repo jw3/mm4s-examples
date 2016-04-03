@@ -82,3 +82,10 @@ lazy val gettweetbot =
   .settings(commonSettings: _*)
   .settings(botsettings: _*)
   .enablePlugins(JavaAppPackaging)
+
+lazy val statusbot =
+  project.in(file("statusbot"))
+  .settings(name := "mm4s-examples-statusbot")
+  .settings(commonSettings: _*)
+  .settings(botsettings: _*)
+  .enablePlugins(JavaAppPackaging)

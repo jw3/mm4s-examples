@@ -66,13 +66,6 @@ class GetTweetsBot extends Actor with Bot with ActorLogging {
   override def preStart() = log.debug("GetTweetsBot starting")
 }
 
-object run extends App {
-  """terms "espn, foo, bar" """ match {
-    case rterms(x) => println(x)
-    case _ => println("no match")
-  }
-}
-
 object GetTweetsBot {
   type TweetQueue = SourceQueue[Option[Status]]
 

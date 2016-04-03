@@ -27,7 +27,9 @@ class StatusBot extends Actor with Bot with ActorLogging {
         log.debug("{} received {}", self.path.name, t)
 
         t match {
-          case rmock(t) => context.self ! JobRequest(t.toLong * 1000)
+          case rmock(t) =>
+            t.split(",").map(_.trim).map(_.toLong)
+            .foreach(v => context.self ! JobRequest(v * 1000))
 
           case rcheck(uid) =>
             jobs.get(uid) match {
@@ -48,7 +50,7 @@ class StatusBot extends Actor with Bot with ActorLogging {
                 || ID | Status |
                 ||------|------|""".stripMargin) {
               (acc, e) =>
-                acc ++ s"\n|${e._1}|${jobPct(e._2, t)}%|"
+                acc ++ s"\n|${e._1}|${mark(e._2, t)}|"
             }
             api ! Post(status)
 
@@ -65,7 +67,7 @@ class StatusBot extends Actor with Bot with ActorLogging {
 }
 
 object StatusBot {
-  val rmock = """mock\s*?(\d+)""".r.unanchored
+  val rmock = """mock\s*?([\d]+[\s*,\s*\d]*)""".r.unanchored
   val rcheck = """check\s*?(\w+)""".r.unanchored
   val rdone = """isdone\s*?(\w+)""".r.unanchored
   val rlist = """@status list$""".r.anchored
@@ -78,6 +80,12 @@ object StatusBot {
   def jobPct(j: Job, curr: Long = System.currentTimeMillis()) = {
     if (jobDone(j)) 100
     else 100 - ((Math.abs(curr - j.stop) / j.length.toDouble) * 100).toInt
+  }
+  def mark(j: Job, curr: Long = System.currentTimeMillis()) = {
+    jobPct(j, curr) match {
+      case 100 => ":white_check_mark:"
+      case p => s"$p%"
+    }
   }
 }
 

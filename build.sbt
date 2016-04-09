@@ -17,9 +17,9 @@ lazy val commonSettings = Seq(
       "org.twitter4j" % "twitter4j-core" % "4.0.4",
       "org.twitter4j" % "twitter4j-stream" % "4.0.4",
 
-      "com.github.jw3" %% "mm4s-api" % "0.1-SNAPSHOT",
-      "com.github.jw3" %% "mm4s-bots" % "0.1-SNAPSHOT",
-      "com.github.jw3" %% "mm4s-dockerbots" % "0.1-SNAPSHOT",
+      "com.github.jw3" %% "mm4s-api" % "0.1",
+      "com.github.jw3" %% "mm4s-bots" % "0.1",
+      "com.github.jw3" %% "mm4s-dockerbots" % "0.1",
       "com.github.jw3" %% "consulq" % "0.1",
 
       "com.rxthings" %% "akka-injects" % "0.4",

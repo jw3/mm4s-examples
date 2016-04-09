@@ -19,7 +19,7 @@ lazy val commonSettings = Seq(
 
       "com.github.jw3" %% "mm4s-api" % "0.1-SNAPSHOT",
       "com.github.jw3" %% "mm4s-bots" % "0.1-SNAPSHOT",
-      "com.github.jw3" %% "mm4s-dockerbot" % "0.1-SNAPSHOT",
+      "com.github.jw3" %% "mm4s-dockerbots" % "0.1-SNAPSHOT",
       "com.github.jw3" %% "consulq" % "0.1",
 
       "com.rxthings" %% "akka-injects" % "0.4",

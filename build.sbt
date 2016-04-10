@@ -50,7 +50,7 @@ lazy val commonSettings = Seq(
 
 lazy val `mm4s-examples` =
   project.in(file("."))
-  .aggregate(mathbot, consulbot)
+  .aggregate(mathbot, consulbot, gettweetbot, statusbot)
 
 /**
  * settings common across bot examples

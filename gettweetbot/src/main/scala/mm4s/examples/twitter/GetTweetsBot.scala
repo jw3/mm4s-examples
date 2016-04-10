@@ -93,10 +93,6 @@ object GetTweetsBot {
   }
 }
 
-class GetTweetsBotModule extends ScalaModule {
-  def configure() = bind[Bot].to[GetTweetsBot]
-}
-
 case class Tweet(id: Long, text: String, time: Long, geo: Option[Location])
 object Tweet {
   def apply(status: Status): Tweet = {
@@ -136,4 +132,13 @@ class StatusForwarder(ref: ActorRef, file: File, stream: TwitterStream, queue: T
       ref ! Upload(file)
     }
   }
+}
+
+
+class GetTweetsBotModule extends ScalaModule {
+  def configure() = bind[Bot].to[GetTweetsBot]
+}
+
+object GetTweetsBotBoot4dev extends App {
+  mm4s.bots.Boot.main(Array.empty)
 }

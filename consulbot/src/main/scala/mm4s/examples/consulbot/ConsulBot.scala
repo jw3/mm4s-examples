@@ -51,3 +51,7 @@ class ConsulBotModule extends ScalaModule {
     bind[Bot].to[ConsulBot]
   }
 }
+
+object ConsulBotBoot4dev extends App {
+  mm4s.bots.Boot.main(Array.empty)
+}

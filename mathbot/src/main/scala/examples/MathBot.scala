@@ -74,3 +74,7 @@ class MathBotModule extends ScalaModule {
     bind[Bot].to[MathBot]
   }
 }
+
+object MathBotBoot4dev extends App {
+  mm4s.bots.Boot.main(Array.empty)
+}

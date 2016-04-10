@@ -43,7 +43,18 @@ Command formats
 - `check id` check completion status of id, return % of completion
 - `isdone id` check completion status of id, returns boolean completion
 
-### Chained Bots
+### Proxy Bot
+
+Example of a bot acting as a pass-through for a third party ws consumer.
+
+To test this example.
+
+1. Start Mattermost using the mmm4s Docker Compose, login with admin and open *Off-Topic*
+2. Run `mm4s.examples.proxy.ProxyBotBoot4dev`
+3. Connect to `ws://localhost:8081/ws/test` using a third party WS util (eg [Dark WebSocket](https://github.com/cyberixae/dwst))
+4. Enter messages into both the WS util and the MM view and notice the flow between them
+
+### Chained Bots (todo)
 
 Example of bot jobs together by sending result a to job b
 

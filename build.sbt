@@ -17,9 +17,9 @@ lazy val commonSettings = Seq(
       "org.twitter4j" % "twitter4j-core" % "4.0.4",
       "org.twitter4j" % "twitter4j-stream" % "4.0.4",
 
-      "com.github.jw3" %% "mm4s-api" % "0.1",
-      "com.github.jw3" %% "mm4s-bots" % "0.1",
-      "com.github.jw3" %% "mm4s-dockerbots" % "0.1",
+      "com.github.jw3" %% "mm4s-api" % "0.2.2",
+      "com.github.jw3" %% "mm4s-bots" % "0.2.2",
+      "com.github.jw3" %% "mm4s-dockerbots" % "0.2.2",
       "com.github.jw3" %% "consulq" % "0.1",
 
       "com.rxthings" %% "webhooks" % "0.5",
@@ -94,6 +94,13 @@ lazy val statusbot =
 lazy val proxybot =
   project.in(file("proxybot"))
   .settings(name := "mm4s-examples-proxybot")
+  .settings(commonSettings: _*)
+  .settings(botsettings: _*)
+  .enablePlugins(JavaAppPackaging)
+
+lazy val multichannel =
+  project.in(file("multichannel"))
+  .settings(name := "mm4s-examples-multichannel")
   .settings(commonSettings: _*)
   .settings(botsettings: _*)
   .enablePlugins(JavaAppPackaging)
